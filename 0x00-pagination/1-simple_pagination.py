@@ -5,8 +5,7 @@ to paginate a dataset of popular baby names.
 """
 
 import csv
-import math
-from typing import List, Tuple
+from typing import Tuple, List
 
 
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
@@ -23,9 +22,7 @@ def index_range(page: int, page_size: int) -> Tuple[int, int]:
     - Tuple[int, int]: A tuple of two integers representing the start
       index and end index.
     """
-    start = (page - 1) * page_size
-    end = page * page_size
-    return (start, end)
+    return ((page_size * page) - page_size, (page_size * page))
 
 
 class Server:
@@ -43,7 +40,7 @@ class Server:
             with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
                 dataset = [row for row in reader]
-            self.__dataset = dataset[1:]  # Skip the header row
+            self.__dataset = dataset[1:]
 
         return self.__dataset
 
@@ -59,16 +56,11 @@ class Server:
         Returns:
         - List[List]: A list of rows corresponding to the current page.
         """
-        assert isinstance(page, int) and page > 0, "Page number must
-        be a positive integer."
-        assert isinstance(page_size, int) and page_size > 0, "Page size must
-        be a positive integer."
-
-        start, end = index_range(page, page_size)
-        dataset = self.dataset()
-
-        if start >= len(dataset):
-            return []  "Return an empty list
-        if the start index is out of range"
-
-        return dataset[start:end]
+        self.dataset()
+        assert isinstance(page, int) and isinstance(page_size, int)
+        assert page > 0 and page_size > 0
+        startEnd = index_range(page, page_size)
+        try:
+            return self.__dataset[startEnd[0]: startEnd[1]]
+        except IndexError:
+            return []
