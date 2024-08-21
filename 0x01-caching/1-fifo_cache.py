@@ -27,6 +27,7 @@ class FIFOCache(BaseCaching):
 
             oldest_key = self.order.pop(0)
             del self.cache_data[oldest_key]
+            print(f"DISCARD: {oldest_key}")
 
     def get(self, key):
         """ Get an item by key """
