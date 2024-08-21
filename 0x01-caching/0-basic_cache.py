@@ -17,5 +17,6 @@ class BasicCache(BaseCaching):
             return None
         return self.cache_data[key]
 
+
 if __name__ == "__main__":
     my_cache = BasicCache()
