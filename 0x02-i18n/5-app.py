@@ -35,11 +35,11 @@ def get_user():
     """
     Retrieve a user from the users dictionary based on login_as URL parameter.
     """
-    try:
-        user_id = int(request.args.get('login_as'))
+    user_id = request.args.get('login_as')
+    if user_id and user_id.isdigit():
+        user_id = int(user_id)
         return users.get(user_id)
-    except (TypeError, ValueError):
-        return None
+    return None
 
 
 @app.before_request
@@ -57,9 +57,14 @@ def get_locale():
     Checks the 'locale' parameter in the request arguments.
     """
     locale = request.args.get('locale')
-    if locale in app.config['LANGUAGES']:
+    if locale and locale in app.config['LANGUAGES']:
         return locale
+    if g.user:
+        user_locale = g.user.get('locale')
+        if user_locale in app.config['LANGUAGES']:
+            return user_locale
     return request.accept_languages.best_match(app.config['LANGUAGES'])
+
 
 
 @app.route('/')
