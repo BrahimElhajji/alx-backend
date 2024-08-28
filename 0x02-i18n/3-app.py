@@ -4,7 +4,7 @@ This module contains a Flask application with Babel for internationalization.
 """
 
 from flask import Flask, render_template, request
-from flask_babel import Babel, _
+from flask_babel import Babel
 
 
 class Config:
@@ -23,20 +23,20 @@ app.config.from_object(Config)
 babel = Babel(app)
 
 
-@babel.localeselector
-def get_locale():
-    """
-    Determine the best match for the supported languages.
-    """
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
-
-
 @app.route('/')
 def index():
     """
     The index route serves the home page with a simple welcome message.
     """
     return render_template('3-index.html')
+
+
+@babel.localeselector
+def get_locale():
+    """
+    Determine the best match for the supported languages.
+    """
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 if __name__ == '__main__':
