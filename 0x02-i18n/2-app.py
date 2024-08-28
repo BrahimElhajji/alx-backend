@@ -24,20 +24,20 @@ app.config.from_object(Config)
 babel = Babel(app)
 
 
-@babel.localeselector
-def get_locale():
-    """
-    Determine the best match for the supported languages.
-    """
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
-
-
 @app.route('/')
 def index():
     """
     The index route serves the home page with a simple welcome message.
     """
     return render_template('2-index.html')
+
+
+@babel.localeselector
+def get_locale():
+    """
+    Determine the best match for the supported languages.
+    """
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 if __name__ == '__main__':
