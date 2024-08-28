@@ -4,7 +4,7 @@ This module contains a Flask application with Babel for internationalization.
 """
 
 from flask import Flask, render_template, request
-from flask_babel import Babel, _
+from flask_babel import Babel
 
 
 class Config:
