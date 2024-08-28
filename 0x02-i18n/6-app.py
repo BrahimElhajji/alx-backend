@@ -5,7 +5,7 @@ Flask app with Babel for internationalization and user login emulation.
 
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
-
+import re
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -57,13 +57,19 @@ def before_request():
 @babel.localeselector
 def get_locale():
     """Determine the best match for supported languages."""
-    locale = request.args.get("locale")
-    if locale and locale in app.config["LANGUAGES"]:
-        return locale
-
-    if g.user and g.user.get('locale') in app.config['LANGUAGES']:
-        return g.user.get('locale')
-    return request.accept_languages.best_match(app.config["LANGUAGES"])
+    locale_param = request.args.get("locale")
+    locale_head = request.headers.get("locale")
+    locale_user = None
+    if g.get("user"):
+        locale_user = g.user.get("locale")
+    if locale_param and locale_param in app.config["LANGUAGES"]:
+        return locale_param
+    elif locale_user and locale_user in app.config["LANGUAGES"]:
+        return locale_user
+    elif locale_head and locale_head in app.config["LANGUAGES"]:
+        return locale_head
+    else:
+        return request.accept_languages.best_match(app.config["LANGUAGES"])
 
 
 @app.route('/')
